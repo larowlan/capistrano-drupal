@@ -21,10 +21,17 @@ Capistrano::Configuration.instance(:must_exist).load do
   after "deploy:setup", "drush:createdb"
   after "deploy:setup", "drush:init_settings"
   after "drupal:symlink_shared", "drush:site_offline"
-  after "deploy:symlink", "drupal:symlink_shared"
+  # New symlink hooks
+  after "deploy:create_symlink", "drupal:symlink_shared"
+  after "deploy:create_symlink", "drush:updatedb"
+  after "deploy:create_symlink", "drush:cache_clear"
+  after "deploy:create_symlink", "drush:site_online"
+  after "deploy:create_symlink", "drupal:symlink_shared"
+  # Legacy hooks for older versions of capistrano
   after "deploy:symlink", "drush:updatedb"
   after "deploy:symlink", "drush:cache_clear"
   after "deploy:symlink", "drush:site_online"
+  after "deploy:symlink", "git:push_deploy_tag"
   after "deploy:symlink", "git:push_deploy_tag"
   
   namespace :deploy do
